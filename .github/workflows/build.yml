@@ -5,6 +5,10 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      checks: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,13 +21,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Test the code
-        run: npm test
+      - name: Test the code and generate coverage
+        run: npm test -- --coverage 
 
-      - name: Better Test Reports Action
-        uses: mridang/action-test-reporter@v1.7.0
-
+      - name: Generate test coverage report
+        uses: mridang/action-test-reporter@v1
+        with:
+          coverage-file: coverage/clover.xml
+          
       - name: Build the code
         run: zip -r application.zip .
-
-        
